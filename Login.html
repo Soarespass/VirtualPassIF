@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login IF</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bcrypt/5.0.1/bcrypt.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-box, .register-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 300px;
+            position: relative;
+        }
+
+        .logo {
+            width: 100px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 10px 0;
+            color: #333;
+        }
+
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: rgb(255, 255, 255);
+            color: #4caf50;
+            box-shadow: 0 0 15px rgb(255, 0, 255);
+        }
+
+        button:active {
+            background-color: rgb(0, 255, 255);
+            box-shadow: 0 0 20px rgb(0, 255, 255);
+        }
+
+        .link {
+            margin-top: 10px;
+            color: #007BFF;
+            cursor: pointer;
+        }
+
+        .message {
+            color: red;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Formulário de login -->
+    <div class="login-box" id="loginBox">
+        <img src="https://portal.tco.ifsuldeminas.edu.br/images/Campus/marcaoficial/IntitutoFederal-aplica%C3%A7%C3%B5es-verticais.png" alt="Logo IFTO" class="logo">
+        <h1>Login</h1>
+        <input type="text" id="matricula" placeholder="Número de Matrícula" />
+        <input type="email" id="email" placeholder="Email Acadêmico" />
+        <div class="message" id="message"></div>
+        <input type="password" id="senha" placeholder="Senha" />
+        <button onclick="validarLogin()">Entrar</button>
+        <div class="link" onclick="mostrarRegistro()">Criar Conta</div>
+    </div>
+
+    <!-- Formulário de registro -->
+    <div class="register-box" id="registerBox" style="display: none;">
+        <img src="https://portal.tco.ifsuldeminas.edu.br/images/Campus/marcaoficial/IntitutoFederal-aplica%C3%A7%C3%B5es-verticais.png" alt="Logo IFTO" class="logo">
+        <h1>Registrar</h1>
+        <input type="text" id="registroMatricula" placeholder="Número de Matrícula" />
+        <input type="email" id="registroEmail" placeholder="Email Acadêmico" />
+        <input type="password" id="registroSenha" placeholder="Senha" />
+        <button onclick="registrarUsuario()">Registrar</button>
+        <div class="link" onclick="mostrarLogin()">Já tem uma conta? Faça login</div>
+    </div>
+
+    <script>
+        // Exibe a tela de registro
+        function mostrarRegistro() {
+            document.getElementById("loginBox").style.display = "none";
+            document.getElementById("registerBox").style.display = "block";
+        }
+
+        // Exibe a tela de login
+        function mostrarLogin() {
+            document.getElementById("registerBox").style.display = "none";
+            document.getElementById("loginBox").style.display = "block";
+        }
+
+        // Função para registrar o usuário
+        function registrarUsuario() {
+            const matricula = document.getElementById("registroMatricula").value;
+            const email = document.getElementById("registroEmail").value;
+            const senha = document.getElementById("registroSenha").value;
+
+            if (matricula === "" || email === "" || senha === "") {
+                alert("Preencha todos os campos!");
+                return;
+            }
+
+            // Recupera usuários armazenados ou cria um array vazio se não existir
+            const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+            // Verificar se o usuário já existe
+            const usuarioExistente = usuarios.find(usuario => usuario.email === email);
+            if (usuarioExistente) {
+                alert("Usuário já cadastrado.");
+                return;
+            }
+
+            // Criptografar senha
+            bcrypt.hash(senha, 10, function(err, hashedSenha) {
+                if (err) {
+                    alert("Erro ao gerar hash da senha");
+                    return;
+                }
+
+                const novoUsuario = {
+                    id: Date.now(), // Usando o timestamp como ID único
+                    matricula: matricula,
+                    email: email,
+                    senha: hashedSenha
+                };
+
+                usuarios.push(novoUsuario); // Adiciona o novo usuário ao array
+                localStorage.setItem("usuarios", JSON.stringify(usuarios)); // Armazena os usuários no localStorage
+
+                alert("Usuário registrado com sucesso!");
+                mostrarLogin();
+            });
+        }
+
+        // Função para validar o login
+        function validarLogin() {
+            const email = document.getElementById("email").value;
+            const matricula = document.getElementById("matricula").value;
+            const senha = document.getElementById("senha").value;
+
+            if (email === "" || matricula === "" || senha === "") {
+                alert("Preencha todos os campos!");
+                return;
+            }
+
+            const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+            const usuario = usuarios.find(u => u.email === email && u.matricula === matricula);
+
+            if (usuario) {
+                bcrypt.compare(senha, usuario.senha, function(err, result) {
+                    if (result) {
+                        alert("Login bem-sucedido!");
+                        window.location.href = "paginaPrincipal.html"; // Página inicial do site
+                    } else {
+                        alert("Senha incorreta.");
+                    }
+                });
+            } else {
+                alert("Usuário ou matrícula não encontrados.");
+            }
+        }
+    </script>
+</body>
+</html>

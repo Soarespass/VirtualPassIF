@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Pass - Site Completo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bcrypt/5.0.1/bcrypt.min.js"></script>
+    <style>
+        /* Resetando margens e preenchimentos */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Corpo da página */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1e1e1e;
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* Cabeçalho global */
+        header {
+            background-color: #004d40;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        header .logo img {
+            width: 150px;
+        }
+
+        header nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        header nav a:hover {
+            color: #b2dfdb;
+        }
+
+        header nav a.active {
+            text-decoration: underline;
+        }
+
+        /* Main com espaçamento dinâmico para o cabeçalho */
+        main {
+            padding-top: calc(100px + 20px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #004d40;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+   < !-- Cabeçalho global -->
+    <header>
+        <div class="logo">
+            <img src="https://portal.ifto.edu.br/imagens/identidade-visual/marca-ifto-assinatura-1-branco.png" alt="Logo IFTO">
+        </div>
+        <nav>
+            <a href="Inicio.html" id="link-home">Home</a>
+            <a href="Passes.html" id="link-passes">Passes</a>
+            <a href="Carrinho.html" id="link-carrinho">Carrinho</a>
+            <a href="Perfil.html" id="link-perfil">Perfil</a>
+            <a href="Login.html" id="link-login">Login</a>
+            <a href="QRCode.html" id="link-qrcode">QR Code</a> <!-- Novo link adicionado -->
+        </nav>
+    </header>
+
+    <main>
+        <!-- Início do conteúdo principal -->
+        <section id="conteudo">
+            <h2>Bem-vindo</h2>
+            <h1>Virtual Pass</h1>
+            <p>No nosso site, transformamos suas necessidades em soluções digitais rápidas e seguras. Facilite sua vida, faça parte do futuro!</p>
+            <button class="btn" onclick="window.location.href='Passes.html'">Comprar Passes</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>Todos os direitos reservados - 2024</p>
+    </footer>
+
+    <script>
+        // Marca o link ativo no menu de navegação
+        document.addEventListener('DOMContentLoaded', () => {
+            const links = document.querySelectorAll('header nav a');
+            const currentPage = window.location.href;
+
+            links.forEach(link => {
+                const linkPage = link.href;
+                if (currentPage === linkPage) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
